@@ -34,7 +34,12 @@ app.use(express.json({ limit: "10kb" })); // Body parser with size limit
 // CORS Configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:5173", "http://localhost:3000"];
+    : [
+        "http://localhost:5173", 
+        "http://localhost:3000", 
+        "https://www.maximuslabs.ai",
+        "https://maximuslabs.ai"
+      ];
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -465,11 +470,11 @@ app.post("/api/search-batch", searchLimiter, async (req, res) => {
     }
 });
 
-// ---------------------------------------------------------------------------
 // Static Assets & Frontend Routing
-// ---------------------------------------------------------------------------
+const PUBLIC_PATH = "/tools/query-fan-out-generator";
+
 // Serve built frontend files from 'dist' folder
-app.use(express.static(path.join(__dirname, "dist")));
+app.use(PUBLIC_PATH, express.static(path.join(__dirname, "dist")));
 
 // Health check
 app.get("/api/health", (_req, res) => {
@@ -483,11 +488,17 @@ app.get("/api/health", (_req, res) => {
 
 // Fallback for SPA — serve index.html for any non-API routes
 app.get("*", (req, res) => {
-    if (!req.path.startsWith("/api/")) {
-        res.sendFile(path.join(__dirname, "dist", "index.html"));
-    } else {
-        res.status(404).json({ error: "API endpoint not found." });
+    if (req.path.includes("/api/")) {
+        return res.status(404).json({ error: "API endpoint not found." });
     }
+    
+    // Serve SPA for the tool path or root
+    if (req.path.startsWith(PUBLIC_PATH) || req.path === "/") {
+        return res.sendFile(path.join(__dirname, "dist", "index.html"));
+    }
+    
+    // Redirect other paths to the tool path
+    res.redirect(PUBLIC_PATH);
 });
 
 // ---------------------------------------------------------------------------

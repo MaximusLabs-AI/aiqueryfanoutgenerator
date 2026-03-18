@@ -11,7 +11,7 @@ export async function fetchSearchResults(query) {
         return clientCache.get(cacheKey);
     }
 
-    const response = await fetch('/api/search-results', {
+    const response = await fetch('https://aiqueryfanoutgenerator.onrender.com/api/search-results', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
@@ -28,7 +28,7 @@ export async function fetchSearchResults(query) {
 }
 
 export async function fetchSearchBatch(queries) {
-    const response = await fetch('/api/search-batch', {
+    const response = await fetch('https://aiqueryfanoutgenerator.onrender.com/api/search-batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ queries }),
