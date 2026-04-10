@@ -1,0 +1,170 @@
+<!-- ===== Query Fan-Out Generator — Paste in Webflow Embed Element on page body ===== -->
+<div id="ml-tool-query-fanout">
+  <header class="ml-tool-header">
+    <span class="ml-tool-badge">PRO UTILITY</span>
+    <h1 class="ml-tool-title">Query Fan-Out</h1>
+    <p class="ml-tool-subtitle">
+      Decode AI Search Intent for GEO-First Visibility. Uncover the hidden sub-queries AI engines generate behind the scenes. Maximize your semantic coverage and capture absolute search dominance.
+    </p>
+  </header>
+
+  <div class="ml-tool-body">
+    <!-- Input Section -->
+    <section class="ml-tool-section">
+      <div class="ml-tool-input-group">
+        <label class="ml-tool-input-label">Target Query</label>
+        <textarea
+          id="ml-fanout-prompt"
+          class="ml-tool-textarea"
+          placeholder="e.g., Which enterprise CRM improves sales revenue the fastest?"
+        ></textarea>
+      </div>
+
+      <div style="display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap">
+        <div style="flex:1;min-width:240px" class="ml-tool-input-group">
+          <label class="ml-tool-input-label">Simulation Engine</label>
+          <select id="ml-fanout-engine" class="ml-tool-select">
+            <option value="chatgpt">ChatGPT Search</option>
+            <option value="google_ai_mode">Google AI Overviews</option>
+            <option value="perplexity">Perplexity Engine</option>
+          </select>
+        </div>
+        <div class="ml-tool-input-group">
+          <button
+            id="ml-fanout-submit"
+            class="ml-tool-primary-button"
+            style="min-width:200px;height:48px;margin-bottom:0"
+          >
+            Audit Intent Flow &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Output Section (hidden until results) -->
+    <section id="ml-fanout-output" class="ml-tool-section" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:16px">
+        <div>
+          <h2 class="ml-tool-section-heading" style="margin-bottom:4px">Detected Intent Divergence</h2>
+          <p class="ml-tool-text-muted">Underlying searches generated for semantic validation.</p>
+        </div>
+        <button id="ml-fanout-copy" class="ml-tool-secondary-button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Export Queries
+        </button>
+      </div>
+      <div id="ml-fanout-cards" class="ml-tool-result-card-container"></div>
+      <div id="ml-fanout-reasoning" class="ml-tool-info-callout" style="display:none">
+        <div style="display:flex;align-items:center;margin-bottom:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0070e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span style="font-weight:600;color:#1e3251;font-size:0.875rem">Engine Analysis</span>
+        </div>
+        <p id="ml-fanout-reasoning-text"></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="ml-tool-footer">
+    Powered by <a href="https://maximuslabs.ai" target="_blank" rel="noopener noreferrer">MaximusLabs AI</a>
+  </div>
+</div>
+
+<script>
+(function() {
+  var API_BASE = 'https://aiqueryfanoutgenerator.onrender.com';
+  var promptEl = document.getElementById('ml-fanout-prompt');
+  var engineEl = document.getElementById('ml-fanout-engine');
+  var submitBtn = document.getElementById('ml-fanout-submit');
+  var outputEl = document.getElementById('ml-fanout-output');
+  var cardsEl = document.getElementById('ml-fanout-cards');
+  var copyBtn = document.getElementById('ml-fanout-copy');
+  var reasoningEl = document.getElementById('ml-fanout-reasoning');
+  var reasoningText = document.getElementById('ml-fanout-reasoning-text');
+
+  var currentQueries = [];
+
+  var SVG_EXTERNAL = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+  var SVG_COPY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var SVG_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  submitBtn.addEventListener('click', async function() {
+    var prompt = promptEl.value.trim();
+    if (!prompt) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<div class="ml-tool-spinner-white"></div> Processing...';
+    promptEl.disabled = true;
+    engineEl.disabled = true;
+    outputEl.style.display = 'none';
+    cardsEl.innerHTML = '';
+
+    try {
+      var res = await fetch(API_BASE + '/api/query-fanout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, engine: engineEl.value })
+      });
+
+      if (!res.ok) {
+        var err = await res.json().catch(function() { return {}; });
+        throw new Error(err.error || 'Server error: ' + res.status);
+      }
+
+      var data = await res.json();
+      currentQueries = data.queries || [];
+
+      cardsEl.innerHTML = currentQueries.map(function(query, i) {
+        var gUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+        var bUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
+        return '<div class="ml-tool-result-card" style="animation-delay:' + (i * 0.08) + 's">' +
+          '<div class="ml-tool-card-query">' + escapeHtml(query) + '</div>' +
+          '<div class="ml-tool-link-group">' +
+            '<a href="' + gUrl + '" target="_blank" rel="noopener noreferrer" class="ml-tool-search-link">Google ' + SVG_EXTERNAL + '</a>' +
+            '<a href="' + bUrl + '" target="_blank" rel="noopener noreferrer" class="ml-tool-search-link">Bing ' + SVG_EXTERNAL + '</a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      if (data.reasoning) {
+        reasoningText.textContent = data.reasoning;
+        reasoningEl.style.display = 'block';
+      } else {
+        reasoningEl.style.display = 'none';
+      }
+
+      outputEl.style.display = 'block';
+
+    } catch (err) {
+      alert('Failed to simulate fan-out: ' + err.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Audit Intent Flow &rarr;';
+      promptEl.disabled = false;
+      engineEl.disabled = false;
+    }
+  });
+
+  copyBtn.addEventListener('click', function() {
+    if (!currentQueries.length) return;
+    navigator.clipboard.writeText(currentQueries.join('\n')).then(function() {
+      copyBtn.innerHTML = SVG_CHECK + ' Copied';
+      setTimeout(function() {
+        copyBtn.innerHTML = SVG_COPY + ' Export Queries';
+      }, 2000);
+    });
+  });
+
+  promptEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitBtn.click();
+    }
+  });
+})();
+</script>

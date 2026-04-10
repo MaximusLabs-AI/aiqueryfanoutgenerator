@@ -1,0 +1,346 @@
+<!-- ===== Query Fan-Out Generator — Paste in Page Settings > Head Code ===== -->
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,600,500,400,300&display=swap" rel="stylesheet">
+<style>
+#ml-tool-query-fanout,
+#ml-tool-query-fanout *,
+#ml-tool-query-fanout *::before,
+#ml-tool-query-fanout *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#ml-tool-query-fanout {
+  max-width: 960px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #1e325120;
+  box-shadow: 0 4px 24px rgba(0, 28, 100, 0.08);
+  font-family: Satoshi, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #333333;
+  line-height: 1.5;
+  overflow: hidden;
+  position: relative;
+}
+
+#ml-tool-query-fanout .ml-tool-header {
+  background: linear-gradient(192deg, #001435 30%, #003087);
+  padding: 28px 32px 22px;
+  color: #fff;
+}
+
+#ml-tool-query-fanout .ml-tool-badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  background: #449afb;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+#ml-tool-query-fanout .ml-tool-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+#ml-tool-query-fanout .ml-tool-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.8;
+  color: #fff;
+}
+
+#ml-tool-query-fanout .ml-tool-body {
+  padding: 32px;
+}
+
+#ml-tool-query-fanout .ml-tool-section {
+  margin-bottom: 28px;
+}
+
+#ml-tool-query-fanout .ml-tool-section-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #001c64;
+  margin-bottom: 16px;
+}
+
+#ml-tool-query-fanout .ml-tool-input-group {
+  margin-bottom: 18px;
+}
+
+#ml-tool-query-fanout .ml-tool-input-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e3251;
+  margin-bottom: 6px;
+}
+
+#ml-tool-query-fanout .ml-tool-input,
+#ml-tool-query-fanout .ml-tool-textarea,
+#ml-tool-query-fanout .ml-tool-select {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #333333;
+  background: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#ml-tool-query-fanout .ml-tool-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+#ml-tool-query-fanout .ml-tool-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+#ml-tool-query-fanout .ml-tool-input:focus,
+#ml-tool-query-fanout .ml-tool-textarea:focus,
+#ml-tool-query-fanout .ml-tool-select:focus {
+  border-color: #0070e0;
+  box-shadow: 0 0 0 3px #0070e033;
+}
+
+#ml-tool-query-fanout .ml-tool-input:disabled,
+#ml-tool-query-fanout .ml-tool-textarea:disabled,
+#ml-tool-query-fanout .ml-tool-select:disabled {
+  background: #f3f3f6;
+  color: #999999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+#ml-tool-query-fanout .ml-tool-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #001c64, #003087);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 28, 100, 0.15);
+  transition: all 0.2s cubic-bezier(.77,0,.175,1);
+}
+
+#ml-tool-query-fanout .ml-tool-primary-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #002d7a, #0070e0);
+  box-shadow: 0 4px 16px rgba(0, 28, 100, 0.25);
+  transform: translateY(-1px);
+}
+
+#ml-tool-query-fanout .ml-tool-primary-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 28, 100, 0.15);
+}
+
+#ml-tool-query-fanout .ml-tool-primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#ml-tool-query-fanout .ml-tool-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: transparent;
+  color: #003087;
+  border: 1.5px solid #e2e2e2;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(.77,0,.175,1);
+}
+
+#ml-tool-query-fanout .ml-tool-secondary-button:hover:not(:disabled) {
+  background: #f3f3f6;
+  border-color: #003087;
+}
+
+#ml-tool-query-fanout .ml-tool-result-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 14px;
+}
+
+#ml-tool-query-fanout .ml-tool-result-card {
+  background: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  padding: 20px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  animation: mlCardFadeIn 0.35s ease forwards;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+#ml-tool-query-fanout .ml-tool-result-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 28, 100, 0.1);
+  transform: translateY(-2px);
+}
+
+@keyframes mlCardFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#ml-tool-query-fanout .ml-tool-card-query {
+  font-weight: 500;
+  margin-bottom: 16px;
+  font-size: 0.9375rem;
+  min-height: 2.4rem;
+  color: #001c64;
+  line-height: 1.5;
+}
+
+#ml-tool-query-fanout .ml-tool-link-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#ml-tool-query-fanout .ml-tool-search-link {
+  flex: 1;
+  text-align: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #f3f3f6;
+  color: #1e3251;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #e2e2e2;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+#ml-tool-query-fanout .ml-tool-search-link:hover {
+  background: #449afb10;
+  border-color: #0070e0;
+  color: #0070e0;
+}
+
+#ml-tool-query-fanout .ml-tool-info-callout {
+  background: #3d4d740f;
+  border-left: 3px solid #0070e0;
+  padding: 14px 18px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 28px;
+}
+
+#ml-tool-query-fanout .ml-tool-info-callout p {
+  font-size: 0.9375rem;
+  color: #333333;
+  line-height: 1.6;
+}
+
+#ml-tool-query-fanout .ml-tool-footer {
+  padding: 14px 32px;
+  background: #f3f3f6;
+  border-top: 1px solid #e2e2e2;
+  font-size: 0.6875rem;
+  color: rgba(30, 50, 81, 0.5);
+  text-align: center;
+}
+
+#ml-tool-query-fanout .ml-tool-footer a {
+  color: #003087;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+#ml-tool-query-fanout .ml-tool-footer a:hover {
+  text-decoration: underline;
+}
+
+#ml-tool-query-fanout .ml-tool-spinner {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 3px solid #e2e2e2;
+  border-top-color: #0070e0;
+  border-radius: 50%;
+  animation: mlSpin 0.6s linear infinite;
+}
+
+#ml-tool-query-fanout .ml-tool-spinner-white {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: mlSpin 0.6s linear infinite;
+}
+
+@keyframes mlSpin {
+  to { transform: rotate(360deg); }
+}
+
+#ml-tool-query-fanout .ml-tool-alert-error {
+  padding: 12px 20px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: #c0392b10;
+  color: #c0392b;
+  font-weight: 500;
+  border: 1px solid #c0392b40;
+}
+
+#ml-tool-query-fanout .ml-tool-text-muted {
+  font-size: 0.9375rem;
+  color: #555555;
+}
+
+@media (max-width: 768px) {
+  #ml-tool-query-fanout .ml-tool-body {
+    padding: 20px;
+  }
+  #ml-tool-query-fanout .ml-tool-header {
+    padding: 24px 20px 20px;
+  }
+  #ml-tool-query-fanout .ml-tool-result-card-container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
